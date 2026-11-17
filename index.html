@@ -10,7 +10,7 @@
 <style>
 :root{--bg:#0e1014;--p1:#171a20;--p2:#1e222a;--p3:#262b35;--line:#2a2f3a;--text:#e9ecf1;--dim:#8a92a3;--dim2:#5f6777;--red:#f04452;--blue:#3182f6;--redbg:rgba(240,68,82,.12);--bluebg:rgba(49,130,246,.12);--gold:#f5b942}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%}
+html,body{margin:0;height:100%;overscroll-behavior:none}
 body{background:var(--bg);color:var(--text);font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",system-ui,sans-serif;font-size:13px;font-variant-numeric:tabular-nums;overflow:hidden}
 button{font:inherit;color:inherit;background:var(--p3);border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
 button:hover:not(:disabled){filter:brightness(1.15)}
@@ -50,7 +50,7 @@ label.chk{display:flex;align-items:center;gap:4px;color:var(--dim);font-size:12p
 
 /* 레이아웃 */
 .layout{display:grid;grid-template-columns:330px minmax(0,1fr) 340px;height:calc(100vh - 58px)}
-.col{overflow-y:auto;border-right:1px solid var(--line);min-width:0}
+.col{overflow-y:auto;border-right:1px solid var(--line);min-width:0;overscroll-behavior:contain;overflow-anchor:none;-webkit-overflow-scrolling:touch}
 .col:last-child{border-right:0}
 @media(max-width:1180px){body{overflow:auto}.layout{grid-template-columns:300px 1fr;height:auto}.col{max-height:none;overflow:visible}.col.right{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}}
 #mnav,#mtrade,#mAcct,.mhide-d{display:none}
@@ -994,8 +994,11 @@ function renderList(force){
   if(listTab==='down') arr.sort((a,b)=>chg(a)-chg(b));
   if(listTab==='val') arr.sort((a,b)=>b.val-a.val);
   const box=$('list'), show=new Set(arr.map(s=>s.i));
-  S.stocks.forEach(s=>{ const r=$('r'+s.i); r.style.display=show.has(s.i)?'':'none'; });
-  arr.forEach((s,k)=>{ const r=$('r'+s.i); box.appendChild(r);
+  S.stocks.forEach(s=>{ const r=$('r'+s.i), d=show.has(s.i)?'':'none'; if(r.style.display!==d) r.style.display=d; });
+  // 순서가 실제로 바뀐 경우에만 다시 배치 (매번 옮기면 휴대폰에서 스크롤이 맨 위로 튐)
+  const domOrder=[...box.querySelectorAll('.row')].map(e=>+e.dataset.i).filter(i=>show.has(i));
+  if(domOrder.some((v,k)=>v!==arr[k].i)){ const col=box.parentElement, st=col.scrollTop; arr.forEach(s=>box.appendChild($('r'+s.i))); col.scrollTop=st; }
+  arr.forEach((s,k)=>{ const r=$('r'+s.i);
     const P=px(s), c=chg(s);
     r.querySelector('.rk').textContent=k+1;
     const b=r.querySelector('.pr b');
