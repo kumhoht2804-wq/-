@@ -10,9 +10,9 @@
 <style>
 :root{--bg:#0e1014;--p1:#171a20;--p2:#1e222a;--p3:#262b35;--line:#2a2f3a;--text:#e9ecf1;--dim:#8a92a3;--dim2:#5f6777;--red:#f04452;--blue:#3182f6;--redbg:rgba(240,68,82,.12);--bluebg:rgba(49,130,246,.12);--gold:#f5b942}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{touch-action:manipulation;margin:0;height:100%;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{background:var(--bg);color:var(--text);font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",system-ui,sans-serif;font-size:13px;font-variant-numeric:tabular-nums;overflow:hidden}
-button{font:inherit;color:inherit;background:var(--p3);border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;font:inherit;color:inherit;background:var(--p3);border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
 button:hover:not(:disabled){filter:brightness(1.15)}
 button:disabled{opacity:.4;cursor:default}
 input{font:inherit;color:var(--text);background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;outline:none}
@@ -349,6 +349,7 @@ body.multi .only-solo{display:none!important}
   #toasts{left:8px;right:8px;width:auto;bottom:auto;top:calc(var(--toph,110px) + 6px);flex-direction:column}
   .toast{padding:9px 11px}.toast .tt{font-size:13px}
   .modal{padding:18px}
+  input,select,textarea{font-size:16px!important}
   .card h3 .tb button{padding:3px 6px}
   th,td{padding:7px 4px}
 }
