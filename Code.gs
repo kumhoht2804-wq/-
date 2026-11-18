@@ -174,7 +174,8 @@ function roomCreate_(r) {
   const u = authFast_(r);
   if (!u) return { ok: false, error: '로그인이 필요해요', relogin: true };
   const days = [3, 5, 7].indexOf(Number(r.days)) >= 0 ? Number(r.days) : 5;
-  const room = { code: newCode_(), host: u.id, status: 'lobby', days: days, msPerMin: 500, breakMs: 8000,
+  const diff = ['easy', 'normal', 'hard'].indexOf(r.diff) >= 0 ? r.diff : 'normal';
+  const room = { code: newCode_(), host: u.id, status: 'lobby', days: days, diff: diff, msPerMin: 500, breakMs: 8000,
                  players: [{ id: u.id, nick: u.nick }], rumors: [], createdAt: Date.now(), seed: 0, startAt: 0 };
   putRoom_(room);
   return { ok: true, room: publicRoom_(room), serverTime: Date.now() };
