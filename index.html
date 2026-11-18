@@ -245,10 +245,24 @@ tbody tr:hover td{background:var(--p2)}
 .rk-row .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk-row .nm small{color:var(--dim);font-size:11.5px}
 .rk-row .v{text-align:right}.rk-row .v small{display:block;font-size:12px}
+/* 상단 내 계좌 요약 */
+.hero{background:linear-gradient(135deg,#1f2735,#1b2029);border:1px solid #2c3546;border-radius:12px;padding:5px 14px;width:250px;flex:none;line-height:1.25}
+.hero small{color:var(--dim);font-size:11px}
+.hero b{display:block;font-size:21px;font-weight:800;letter-spacing:-.3px}
+.hero .pl{display:flex;gap:10px;font-size:12px;color:var(--dim);white-space:nowrap}
+.hero .pl b{display:inline;font-size:12.5px;font-weight:700;letter-spacing:0}
+.topbar{height:auto;min-height:58px;padding-top:6px;padding-bottom:6px}
+@media(min-width:1181px){.layout{height:calc(100vh - var(--toph,64px))}}
+.iconbtn.exit{color:#ffb3b5;border-color:#5a2a30}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.setrow span{font-weight:500}.setrow small{display:block;color:var(--dim);font-size:11.5px;font-weight:400;margin-top:2px}
+.setrow select{background:var(--p2);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit;padding:6px 8px}
+.setrow input[type=checkbox]{width:20px;height:20px}
 /* 칸 크기 고정: 숫자가 바뀌어도 레이아웃이 흔들리지 않게 */
 .idx{width:122px;flex:none}
 .clock{width:168px;flex:none}
-.acct .k{width:104px;flex:none;overflow:hidden}
+.acct .k{width:112px;flex:none;overflow:hidden;background:var(--p2);border-radius:10px;padding:5px 10px}
+.acct{gap:8px!important}
 .acct .k b,.acct .k small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .acct .k.cash{width:118px}
 .acct .k.loan{width:150px}
@@ -315,7 +329,7 @@ body.multi .only-solo{display:none!important}
 @media(max-width:760px){
   body{overflow:hidden;font-size:13.5px}
   .topbar{height:auto;flex-wrap:wrap;gap:6px 14px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;overflow:visible}
-  .logo,.topbar label.chk,.topbar .sp,#helpBtn,#resetBtn,#rankBtn,#menuBtn,.topbar .user,.tier,.idx:nth-child(3){display:none!important}
+  .logo,.topbar label.chk,.topbar .sp,#rankBtn,.topbar .user,.tier,.idx:nth-child(3){display:none!important}
   .acct .k,.acct .k.cash,.acct .k.loan,.acct .k.room{width:auto}
   .acct .k.room{grid-column:span 3;order:9}
   .acct .k.loan{grid-column:span 2;order:8}
@@ -373,32 +387,52 @@ body.multi .only-solo{display:none!important}
   .card h3 .tb button{padding:3px 6px}
   th,td{padding:7px 4px}
 }
+@media(max-width:2000px){.topbar .user{display:none!important}}
+.topbar{flex-wrap:wrap;overflow:visible!important;row-gap:6px}
+@media(max-width:1400px) and (min-width:761px){.lt{display:none}.topbar{column-gap:12px}}
+@media(max-width:1640px){.topbar .tier,.topbar .idx:nth-child(3){display:none!important}.clock{width:150px}.acct .k.loan{width:132px}}
+@media(max-width:1180px){.topbar{flex-wrap:wrap;overflow:visible}}
+@media(max-width:760px){
+  #bigNews{top:calc(var(--toph,120px) + 6px)}
+  .topbar .acct{order:10}
+  #setBtn{margin-left:auto}
+  .hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:8px}
+  .hero>small,.hero>b,.hero>.pl{grid-column:1}
+  .hero>#speeds{grid-column:2;grid-row:1/4;align-self:center;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  body.multi .hero>#speeds{display:none!important}
+  .hero>#speeds button{padding:6px 10px}
+  .topbar{gap:6px 6px;padding-top:8px}
+  .idx,.clock{width:auto}
+  .clock small{display:none}
+  #setBtn,#menuBtn{padding:5px 8px;font-size:12px}
+  .acct{grid-template-columns:1fr 1fr!important}
+  .acct .hero{grid-column:1/-1;width:auto;padding:8px 12px}
+  .hero b{font-size:25px}
+  .hero .pl{font-size:13px}.hero .pl b{font-size:13.5px}
+  .acct .k.loan{grid-column:auto!important;order:0!important}
+  .acct .k.room{grid-column:1/-1!important}
+}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div class="logo">🐜 개미<span>증권</span></div>
+  <div class="logo">🐜<span class="lt"> 개미<span>증권</span></span></div>
   <div class="idx"><small>코스피</small><b id="kospi"></b></div>
   <div class="idx"><small>코스닥</small><b id="kosdaq"></b></div>
   <div class="clock"><small class="dim" id="date"></small><b><span id="time"></span><span class="pill" id="mstat"></span></b></div>
   <div class="speeds only-solo" id="speeds"><button data-s="0">⏸</button><button data-s="1">1x</button><button data-s="3">3x</button><button data-s="10">10x</button></div>
-  <label class="chk only-solo"><input type="checkbox" id="pauseNews"> 속보 시 일시정지</label>
-  <label class="chk">화면 갱신 <select id="uiRate" style="background:var(--p2);color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 4px"><option value="500">0.5초</option><option value="1500">1.5초</option><option value="3000">3초</option></select></label>
   <div class="sp"></div>
   <div class="acct">
-    <div class="k"><small>총 자산</small><b id="aTotal"></b></div>
-    <div class="k cash"><small>주문가능 현금</small><b id="aCash"></b></div>
-    <div class="k loan" id="kLoan"><small>💳 신용 대출 · 담보비율</small><b id="aLoan"></b></div>
-    <div class="k"><small>오늘 손익</small><b id="aToday"></b></div>
-    <div class="k"><small>총 수익률</small><b id="aRet"></b></div>
+    <div class="hero"><small>💼 내 총 자산</small><b id="aTotal"></b><div class="pl"><span id="aToday"></span><span id="aRet"></span></div></div>
+    <div class="k cash"><small>💵 주문가능 현금</small><b id="aCash"></b></div>
+    <div class="k loan" id="kLoan"><small>💳 신용 · 담보비율</small><b id="aLoan"></b></div>
     <div class="k room only-multi" id="kRoom"><small id="kRoomT"></small><b id="kRoomB"></b></div>
     <div class="tier only-solo"><b id="tierName"></b><small class="dim" id="tierNext"></small><div class="bar"><i id="tierBar"></i></div></div>
   </div>
   <div class="user" id="userChip"></div>
-  <button class="iconbtn only-solo" id="rankBtn">🏆 랭킹</button>
-  <button class="iconbtn" id="menuBtn">🏠 메뉴</button>
-  <button class="iconbtn only-solo" id="helpBtn">도움말</button>
-  <button class="iconbtn only-solo" id="resetBtn">초기화</button>
+  <button class="iconbtn only-solo" id="rankBtn" title="랭킹">🏆<span class="lt"> 랭킹</span></button>
+  <button class="iconbtn" id="setBtn" title="설정">⚙️</button>
+  <button class="iconbtn exit" id="menuBtn">🚪 나가기</button>
 </div>
 
 <div class="layout">
@@ -523,6 +557,16 @@ body.multi .only-solo{display:none!important}
 <div class="ov" id="ovLobby"><div class="modal login" id="lobbyBody"></div></div>
 <div class="ov" id="ovRumor"><div class="modal" id="rumorBody"></div></div>
 <div class="ov" id="ovEnd"><div class="modal" id="endBody"></div></div>
+<div class="ov" id="ovSet"><div class="modal login" style="text-align:left">
+  <h2>⚙️ 설정</h2>
+  <div class="setrow"><span>계정</span><span id="setUser" class="dim" style="font-weight:400;text-align:right"></span></div>
+  <div class="setrow only-solo"><span>내 등급</span><span id="setTier" style="text-align:right"></span></div>
+  <div class="setrow"><span>화면 갱신 간격<small>짧을수록 자주 바뀌고, 길수록 차분하게 볼 수 있어요</small></span><select id="uiRate"><option value="500">0.5초</option><option value="1500">1.5초</option><option value="3000">3초</option></select></div>
+  <div class="setrow only-solo"><span>속보 뜨면 일시정지<small>큰 뉴스가 나오면 시간을 멈춰요</small></span><input type="checkbox" id="pauseNews"></div>
+  <div class="setrow"><span>게임 방법</span><button class="iconbtn" id="helpBtn">튜토리얼 다시 보기</button></div>
+  <div class="setrow only-solo"><span>새 게임<small>지금 게임을 지우고 처음부터</small></span><button class="iconbtn" id="resetBtn">초기화</button></div>
+  <button class="mbtn" id="setClose">닫기</button>
+</div></div>
 <div class="ov" id="ovDiff"><div class="modal login" id="diffBody"></div></div>
 <div id="countdown"><span>게임 시작까지</span><b id="cdNum">5</b><span id="cdSub"></span></div>
 <div class="ov" id="ovRank"><div class="modal">
@@ -843,8 +887,9 @@ function unpack(str){
 // ----- 서버 통신 -----
 async function api(body,keepalive){
   if(!API_URL) throw new Error('no server');
-  const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(body),keepalive:!!keepalive});
-  return r.json();
+  const ac=new AbortController(), t=setTimeout(()=>ac.abort(),12000); // 12초 넘게 응답이 없으면 포기
+  try{ const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(body),keepalive:!!keepalive,signal:ac.signal}); return await r.json(); }
+  finally{ clearTimeout(t); }
 }
 let lastCloud=0,cloudBusy=false,cloudAgain=false,syncState='';
 function cloudSave(force,keepalive){
@@ -1273,10 +1318,11 @@ function renderTop(){
   $('aCash').textContent=won(avail());
   if(S.cash>=0) $('aLoan').innerHTML='<span class="dim" style="font-weight:400">없음</span>';
   else { const ratio=holdVal()/-S.cash; $('aLoan').innerHTML=`${won(-S.cash)} · <span style="color:${ratio<1.4?'var(--red)':'#ffb020'}">${Math.round(ratio*100)}%</span>`; }
-  $('aToday').innerHTML=`<span class="${cls(today)}">${won(today,1)}</span>`;
-  $('aRet').innerHTML=`<span class="${cls(eq-SEED)}">${pct(eq/SEED-1)}</span>`;
+  $('aToday').innerHTML=`오늘 <b class="${cls(today)}">${arrow(today)}${won(Math.abs(today))} (${pct(today/S.startEq)})</b>`;
+  $('aRet').innerHTML=`전체 <b class="${cls(eq-SEED)}">${pct(eq/SEED-1)}</b>`;
   let ti=0; TIERS.forEach((t,i)=>{if(eq>=t.min)ti=i;});
   const nx=TIERS[ti+1]; $('tierName').textContent=TIERS[ti].n;
+  $('setTier').innerHTML=`<b>${TIERS[ti].n}</b>${nx?`<small>다음 ${nx.n} · ${won(nx.min)}</small>`:''}`;
   $('tierNext').textContent=nx?`다음: ${nx.n} (${won(nx.min)})`:'최고 등급 달성!';
   $('tierBar').style.width=nx?Math.max(2,Math.min(100,Math.log(eq/Math.max(TIERS[ti].min,SEED))/Math.log(nx.min/Math.max(TIERS[ti].min,SEED))*100))+'%':'100%';
   if(MODE==='solo'&&S.tier!==undefined&&ti>S.tier) toast({lb:'🎉 등급 상승',col:'var(--gold)',title:`${TIERS[ti].n} 등급이 됐어요!`,foot:`총 자산 ${won(eq)}`});
@@ -1500,7 +1546,10 @@ document.querySelectorAll('.pcts button').forEach(b=>b.onclick=()=>{ const s=S.s
   const n=side==='buy'?Math.floor(buyPower()*f/(price*1.00015)):Math.floor(((S.holds[s.code]?.q||0)-lockedSell(s.code))*f);
   $('oQty').value=Math.max(0,n); renderOrder(); });
 $('oSubmit').onclick=placeOrder;
-$('helpBtn').onclick=showTut;
+$('helpBtn').onclick=()=>{ $('ovSet').classList.remove('show'); showTut(); };
+$('setBtn').onclick=()=>$('ovSet').classList.add('show');
+$('setClose').onclick=()=>$('ovSet').classList.remove('show');
+$('ovSet').onclick=e=>{ if(e.target.id==='ovSet') $('ovSet').classList.remove('show'); };
 $('uiRate').value=String(UI_MS); if(!$('uiRate').value) $('uiRate').value='1500';
 $('uiRate').onchange=e=>{ UI_MS=+e.target.value; try{localStorage.setItem('gaemi_ui',UI_MS);}catch(_){} lastRender=0; toast({lb:'설정',col:'#5f6777',title:`화면을 ${UI_MS/1000}초마다 갱신해요`}); };
 $('resetBtn').onclick=e=>{ const b=e.target; if(b.dataset.c){ delete b.dataset.c; b.textContent='초기화'; setSpeed(0); showDiffPicker(newSolo,'새 게임 시작'); return; }
@@ -1535,7 +1584,11 @@ function renderSheetHold(){
 document.querySelectorAll('#mtrade button').forEach(b=>b.onclick=()=>openSheet(b.dataset.ms));
 $('sheetX').onclick=closeSheet;
 $('ovSheet').onclick=e=>{ if(e.target.id==='ovSheet') closeSheet(); };
-function syncTop(){ document.documentElement.style.setProperty('--toph',document.querySelector('.topbar').offsetHeight+'px'); }
+function placeSpeeds(){ const sp=$('speeds'), hero=document.querySelector('.hero');
+  if(isMobile()){ if(sp.parentElement!==hero) hero.appendChild(sp); }
+  else if(sp.parentElement===hero) document.querySelector('.clock').after(sp); }
+window.addEventListener('resize',placeSpeeds);
+function syncTop(){ placeSpeeds(); document.documentElement.style.setProperty('--toph',document.querySelector('.topbar').offsetHeight+'px'); }
 new ResizeObserver(syncTop).observe(document.querySelector('.topbar'));
 const cv=$('chart');
 cv.addEventListener('touchstart',e=>{const r=cv.getBoundingClientRect(),t=e.touches[0]; hover={x:t.clientX-r.left,y:t.clientY-r.top}; drawChart();},{passive:true});
@@ -1606,6 +1659,7 @@ function renderUser(){
     :syncState==='err'?'<span class="sync err">⚠️ 서버 저장 실패</span>':syncState==='ok'?'<span class="sync">☁️ 저장됨</span>':'<span class="sync">☁️ 연결됨</span>';
   const dd=S&&DIFF[S.diff||'normal'];
   el.innerHTML=`<b>👤 ${AUTH.guest?'게스트':esc(AUTH.nickname)}</b>${dd?`<span class="badge mk">${dd.icon} ${dd.n}</span>`:''}${sync}`;
+  $('setUser').innerHTML=el.innerHTML;
 }
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function showRanking(){
@@ -1641,13 +1695,21 @@ function showMode(){
 }
 $('mSolo').onclick=()=>startSolo();
 $('mMulti').onclick=()=>showLobbyMenu();
-$('mRejoin').onclick=()=>{ let rc=null; try{ rc=localStorage.getItem('gaemi_room'); }catch(_){} if(rc) joinRoom(rc,true); };
+$('mRejoin').onclick=()=>{ MP.left=false; let rc=null; try{ rc=localStorage.getItem('gaemi_room'); }catch(_){} if(rc) joinRoom(rc,true); };
 $('mLogout').onclick=()=>{ if(AUTH&&AUTH.guest){ try{localStorage.removeItem('gaemi_auth');}catch(_){} AUTH=null; showLogin(); } else logout(); };
-$('menuBtn').onclick=()=>{ if(MODE==='solo'){ save(true); showMode(); } else { stopMulti(); MODE='solo'; document.body.classList.remove('multi'); showMode(); } };
+$('menuBtn').onclick=e=>{
+  const b=$('menuBtn');
+  if(MODE==='solo'){ save(true); closeSheet(); showMode(); toast({lb:'저장',col:'#5f6777',title:'게임을 저장했어요. 언제든 이어서 할 수 있어요',time:' '}); return; }
+  closeSheet();
+  if(MP.ended||MP.results){ $('ovEnd').classList.remove('show'); MP.results=false; leaveRoomLocal(); showMode(); return; } // 끝난 게임은 바로 나가기
+  if(!b.dataset.c){ b.dataset.c=1; b.textContent='한 번 더 누르면 나가요'; setTimeout(()=>{ delete b.dataset.c; b.textContent='🚪 나가기'; },2500); return; }
+  delete b.dataset.c; b.textContent='🚪 나가기';
+  stopMulti(); MP.left=true; MODE='solo'; document.body.classList.remove('multi'); showMode();
+  toast({lb:'안내',col:'#5f6777',title:'게임에서 나왔어요. 처음 화면의 "진행 중인 게임으로 돌아가기"로 다시 들어갈 수 있어요',time:' '}); };
 
 // ===================== 난이도 선택 =====================
 function showDiffPicker(onPick,title){
-  setSpeed(0); $('ovDiff').classList.add('show');
+  setSpeed(0); $('ovSet').classList.remove('show'); $('ovDiff').classList.add('show');
   $('diffBody').innerHTML=`<h2>${title||'난이도 선택'}</h2><div class="sub">새 게임의 난이도를 골라주세요</div>
     <div class="modes">${Object.entries(DIFF).map(([k,d])=>`<button class="mode" data-k="${k}"><i>${d.icon}</i><b>${d.n}</b><small>${d.desc}</small></button>`).join('')}</div>
     <div class="rules">📈 선반영: 뉴스보다 가격이 먼저 움직여요 · 📉 재료소멸: 호재 뒤 오히려 급락<br>📱 찌라시와 [정정] 공시: 가짜 정보에 주의 · 🎭 작전주: 이유 없는 급등 뒤 폭락</div>`;
@@ -1788,8 +1850,10 @@ async function multiSync(restore){
     const eq=MP.built&&S?equity():SEED;
     const st=MP.built&&S?{equity:Math.round(eq),ret:+((eq/SEED-1)*100).toFixed(2),bankrupt:!!S.bankrupt,final:MP.ended,day:S.day,minute:S.minute,acct:pickAcct()}:null;
     if(st) st.acct.fills=st.acct.fills.slice(0,15);
-    const r=await api({action:'room_sync',code:ROOM.code,id:AUTH.id,token:AUTH.token,st,restore:!!restore});
+    const code=ROOM.code;
+    const r=await api({action:'room_sync',code,id:AUTH.id,token:AUTH.token,st,restore:!!restore});
     const t1=Date.now();
+    if(!ROOM||ROOM.code!==code||MODE!=='multi'&&MP.left) return; // 그사이 방을 나갔으면 늦게 온 응답은 무시
     if(!r.ok){ if(r.relogin) return kicked(); if(r.gone) leaveRoomLocal(r.error); return; }
     if(t1-t0<=MP.rtt*1.3){ MP.offset=r.serverTime-(t0+t1)/2; MP.rtt=t1-t0; }
     onRoom(r.room,r.players,r.mine);
@@ -1797,6 +1861,7 @@ async function multiSync(restore){
   finally{ MP.busy=false; }
 }
 function onRoom(room,players,mine){
+  if(MP.left||!ROOM||room.code!==ROOM.code) return;
   ROOM=room; if(players) MP.players=players;
   let late=false;
   (room.rumors||[]).forEach(x=>{
@@ -1811,7 +1876,7 @@ function onRoom(room,players,mine){
 function startSyncLoop(){ clearInterval(MP.syncT); MP.syncT=setInterval(()=>multiSync(),1500); }
 function stopMulti(){ clearInterval(MP.syncT); clearInterval(MP.loopT); MP.syncT=MP.loopT=null; MP.built=false; $('countdown').classList.remove('show'); }
 function leaveRoomLocal(msg){
-  stopMulti(); try{localStorage.removeItem('gaemi_room');}catch(_){}
+  stopMulti(); MP.left=true; try{localStorage.removeItem('gaemi_room');}catch(_){}
   ROOM=null; MODE='solo'; document.body.classList.remove('multi');
   showLobbyMenu(); if(msg) $('lbErr').textContent=msg;
 }
@@ -1850,7 +1915,7 @@ async function joinRoom(code,rejoin){
   }catch(e){ if(!$('ovLobby').classList.contains('show')) showLobbyMenu(); $('lbErr').textContent='서버에 연결할 수 없어요'; }
 }
 function enterRoom(room,serverTime,restore){
-  ROOM=room; MP.known={}; MP.players=room.players.map(p=>({...p,equity:SEED,online:true})); MP.built=false; MP.rtt=1e9;
+  MP.left=false; ROOM=room; MP.known={}; MP.players=room.players.map(p=>({...p,equity:SEED,online:true})); MP.built=false; MP.rtt=1e9;
   if(serverTime) MP.offset=serverTime-Date.now();
   try{localStorage.setItem('gaemi_room',room.code);}catch(_){}
   startSyncLoop();
@@ -1905,9 +1970,11 @@ function drawRumor(){
 }
 // ----- 게임 종료 -----
 async function finishMulti(){
-  $('ovDay').classList.remove('show'); $('ovRumor').classList.remove('show');
-  await multiSync();
-  setTimeout(async()=>{ await multiSync(); MP.results=true; renderResults(); $('ovEnd').classList.add('show'); },2500);
+  $('ovDay').classList.remove('show'); $('ovRumor').classList.remove('show'); closeSheet();
+  const show=()=>{ if(MP.results) return; MP.results=true; renderResults(); $('ovEnd').classList.add('show'); };
+  setTimeout(show,9000); // 서버가 늦어도 9초 안엔 결과를 보여줘요
+  try{ await multiSync(); await new Promise(r=>setTimeout(r,2500)); await multiSync(); }catch(_){}
+  show();
 }
 function renderResults(){
   const ps=MP.players.slice().sort((a,b)=>(a.bankrupt-b.bankrupt)||(b.equity-a.equity));
@@ -1921,8 +1988,9 @@ function renderResults(){
       <div class="v"><b>${p.bankrupt?'-':won(p.equity)}</b><small class="${cls(p.ret)}">${p.bankrupt?'':`${p.ret>0?'+':''}${(+p.ret).toFixed(2)}%`}</small></div></div>`).join('')}
     ${rumors.length?`<div class="mlist" style="margin-top:12px"><h4>📱 찌라시 유포자 공개</h4>${rumors.map(r=>{ const s=S.stocks[r.s];
       return `<div><span style="font-size:12.5px">${RUMOR_TPL[r.dir][r.tpl].replace('{n}',s?s.n:'?')}</span><b>${r.nick?esc(r.nick):'…'}</b></div>`;}).join('')}</div>`:''}
-    <button class="mbtn" id="endBack">로비로 돌아가기</button>`;
+    <div style="display:flex;gap:8px;margin-top:6px"><button class="mbtn" id="endBack" style="margin:0">로비로</button><button class="mbtn" id="endMenu" style="margin:0;background:var(--p3)">처음 화면으로</button></div>`;
   $('endBack').onclick=()=>{ $('ovEnd').classList.remove('show'); MP.results=false; leaveRoomLocal(); };
+  $('endMenu').onclick=()=>{ $('ovEnd').classList.remove('show'); MP.results=false; leaveRoomLocal(); showMode(); };
 }
 
 // ===================== 시작 =====================
