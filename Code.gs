@@ -228,7 +228,7 @@ function roomRumor_(r) {
   const used = room.rumors.filter(function (x) { return x.by === u.id; }).length;
   if (used >= MAX_RUMORS) return { ok: false, error: '찌라시를 모두 사용했어요' };
   const s = Number(r.stock), dir = Number(r.dir), tpl = Number(r.tpl);
-  if (!(s >= 0 && s < 60) || (dir !== 1 && dir !== -1) || !(tpl >= 0 && tpl < 3)) return { ok: false, error: '잘못된 찌라시예요' };
+  if (!(s >= 0 && s < 400) || (dir !== 1 && dir !== -1) || !(tpl >= 0 && tpl < 3)) return { ok: false, error: '잘못된 찌라시예요' };
   const c = clock_(room, Date.now());
   let day = c.d, min = c.m + 6; // 약 3초 뒤 모두에게 동시에 퍼짐
   if (min >= MPD - 10) { day += 1; min = 8; }

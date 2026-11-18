@@ -570,7 +570,53 @@ const DEFS=[
  ['KOREX 반도체','ETF','ETF',31200,.003,0,0,'반도체 종목들을 묶은 테마 ETF','sec:반도체'],
  ['골드선물 ETF','ETF','ETF',15600,.007,0,0,'금 가격을 따라감. 시장이 불안할수록 오르는 안전자산','gold'],
  ['WTI원유 ETF','ETF','ETF',13400,.02,0,0,'국제 유가를 따라감. 중동 뉴스에 민감','oil'],
+ ['KOREX 코스닥150','ETF','ETF',12800,.002,0,0,'코스닥 대표 150종목을 따라가는 ETF','qidx'],
+ ['KOREX 인버스2X','ETF','ETF',2300,.003,0,0,'코스피와 반대로 2배 움직임. 폭락장에 대박, 상승장엔 쪽박','inv2'],
+ ['KOREX 바이오','ETF','ETF',8700,.004,0,0,'바이오 종목들을 묶은 테마 ETF','sec:바이오'],
+ ['KOREX 방산','ETF','ETF',15200,.004,0,0,'방위산업 종목들을 묶은 테마 ETF','sec:방산'],
 ];
+// 업종별로 종목을 더 채워요. 가격·시총·변동성은 이름으로 정해져서 모든 기기에서 똑같아요.
+const EXTRA={
+ '반도체':['세종반도체','하이텍솔루션','나노웨이퍼','코어테스트','퓨처메모리','정밀소재','에이아이칩','웨이퍼텍','패키징솔루션','팹리스원'],
+ '2차전지':['그린셀','양극화학','파워셀','에너지머티리얼즈','전해질케미칼','동박테크','배터리리사이클'],
+ '자동차':['한국모빌리티','스마트카부품','오토라이트','대한기어','미래전장'],
+ '인터넷':['쇼핑몰닷컴','페이원','클라우드나인','핀테크코리아','검색AI','배달한끼','중고마켓'],
+ '게임':['나이트게임즈','블루스튜디오','메타버스랩','e스포츠원','픽셀나이트','모바일원'],
+ '엔터':['드림엔터','라온뮤직','스타픽처스','웹툰스튜디오','아이돌팩토리','OTT코리아'],
+ '바이오':['한빛바이오','진셀','메디큐','바이오젠텍','에이치랩','큐어메드','셀로직','진단키트','의료AI','제약바이오'],
+ '금융':['대한은행지주','미래캐피탈','푸른증권','안심화재','다온생명'],
+ '건설':['대일건설','한마음E&C','시티개발','해솔건설'],
+ '조선':['동해조선','오션기자재','해양플랜트'],
+ '방산':['국방시스템','하늘방산','스텔스텍'],
+ '화학':['한빛케미칼','바다석유화학','정밀화학'],
+ '유통':['편한마트','온라인몰','맛있는식품','바른제과','신선물산'],
+ '항공':['구름항공','여행가자','공항면세'],
+ '통신':['하나텔레콤','엘티이넷'],
+ '테마':['양자컴퓨팅','핵융합에너지','UAM모빌리티','초전도소재','AI로봇틱스','메타버스원','우주위성','수소에너지','스마트팜','마스크테마'],
+ '철강':['대한스틸','강철산업','특수강코리아','동방제강'],
+ '화장품':['뷰티코리아','청담코스메틱','설화뷰티','K뷰티랩','올리브코스'],
+ '원전':['한국원자력기술','소형원자로','원전기자재','SMR엔지니어링'],
+ '해운':['대양해운','글로벌물류','컨테이너라인','벌크마린'],
+};
+const SEC_VOL={'반도체':.03,'2차전지':.045,'자동차':.022,'인터넷':.028,'게임':.04,'엔터':.038,'바이오':.05,'금융':.016,'건설':.024,'조선':.032,'방산':.03,'화학':.024,'유통':.018,'항공':.026,'통신':.011,'테마':.07,'철강':.022,'화장품':.03,'원전':.035,'해운':.035};
+const SEC_DESC={'반도체':['반도체 장비','메모리 부품','반도체 소재','후공정 패키징','시스템반도체 설계'],'2차전지':['양극재','배터리 소재','전해액','배터리 장비','폐배터리 재활용'],
+ '자동차':['자동차 부품','전장 부품','모빌리티 서비스'],'인터넷':['플랫폼','핀테크','클라우드','이커머스'],'게임':['모바일 게임','PC·콘솔 게임','게임 플랫폼'],
+ '엔터':['아이돌 기획사','영화·드라마 제작','웹툰·콘텐츠'],'바이오':['신약 개발','진단기기','바이오 위탁생산','의료기기'],'금융':['은행','보험','증권','캐피탈'],
+ '건설':['주택 건설','토목·플랜트','부동산 개발'],'조선':['조선','조선 기자재','해양플랜트'],'방산':['방산 장비','유도무기','방산 전자'],'화학':['석유화학','정밀화학','정유'],
+ '유통':['대형마트','이커머스','식품','제과'],'항공':['항공사','여행사','면세점'],'통신':['통신사','인터넷망'],'테마':['테마주'],'철강':['철강','특수강'],
+ '화장품':['화장품 브랜드','화장품 ODM'],'원전':['원전 설계','원전 기자재'],'해운':['컨테이너선사','물류','벌크선사']};
+function nameHash(str,k){ let h=2166136261^k; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return ((h>>>0)%100000)/100000; }
+Object.entries(EXTRA).forEach(([sec,names])=>names.forEach(n=>{
+  const h1=nameHash(n,1),h2=nameHash(n,2),h3=nameHash(n,3),h4=nameHash(n,4),theme=sec==='테마';
+  const cap=theme?.05+h1*.5:Math.exp(Math.log(.25)+h1*Math.log(40)); // 0.25조 ~ 10조
+  const mkt=theme||cap<2.5?'KOSDAQ':'KOSPI';
+  const price=Math.round(Math.exp(Math.log(theme?1500:4000)+h2*Math.log(theme?12:60)));
+  const v=(SEC_VOL[sec]||.03)*(cap<1?1.35:cap<4?1.1:.9)*(.85+h3*.3);
+  const bio=sec==='바이오'||theme, per=bio&&h4<.55?-1:Math.round(6+h4*45);
+  const ds=SEC_DESC[sec]||[sec], size=cap>=8?'중대형주':cap>=2?'중소형주':'소형주';
+  const desc=theme?`⚠️ ${n.replace(/테마$/,'')} 테마주. 실적보다 소문에 급등락`:`${ds[Math.floor(h4*ds.length)]} ${size}${per<0?' · 아직 적자':''}`;
+  DEFS.splice(DEFS.findIndex(d=>d[8]),0,[n,sec,mkt,price,+v.toFixed(4),+cap.toFixed(2),per,desc]);
+}));
 const SECTORS=[...new Set(DEFS.filter(d=>!d[8]).map(d=>d[1]))];
 
 // ===================== 뉴스 정의 =====================
@@ -578,7 +624,7 @@ const SECTORS=[...new Set(DEFS.filter(d=>!d[8]).map(d=>d[1]))];
 const STORIES=[
  {name:'중동 전쟁 위기',icon:'🪖',stages:[
   {t:'중동 긴장 고조, 무력 충돌 우려',fx:{ALL:-.012,'원유':.06,'방산':.07,'항공':-.05,'금':.02},next:[[.55,1],[.45,3]]},
-  {t:'중동 전면전 발발! 유가 폭등',fx:{ALL:-.045,'원유':.2,'방산':.22,'항공':-.16,'화학':.05,'금':.06,'자동차':-.03},next:[[.6,2],[.4,3]]},
+  {t:'중동 전면전 발발! 유가 폭등',fx:{ALL:-.045,'원유':.2,'방산':.22,'항공':-.16,'화학':.05,'금':.06,'자동차':-.03,'해운':.1},next:[[.6,2],[.4,3]]},
   {t:'확전 공포… 미국 개입 시사',fx:{ALL:-.035,'원유':.1,'방산':.13,'항공':-.09,'금':.04},next:[[1,3]]},
   {t:'휴전 협상 전격 타결! 위험자산 랠리',fx:{ALL:.035,'원유':-.13,'방산':-.13,'항공':.13,'금':-.03},next:[]}]},
  {name:'AI 슈퍼사이클',icon:'🤖',stages:[
@@ -601,16 +647,24 @@ const STORIES=[
   {t:'외환당국 개입, 환율 급안정',fx:{ALL:.03,'항공':.05},next:[]}]},
  {name:'K-컬처 열풍',icon:'🎤',stages:[
   {t:'K-드라마·K팝 글로벌 차트 석권',fx:{'엔터':.1,'게임':.04,'유통':.03},next:[[.6,1],[.4,2]]},
-  {t:'中 한한령 전면 해제 공식 발표',fx:{'엔터':.2,'게임':.12,'유통':.06,'항공':.05},next:[]},
+  {t:'中 한한령 전면 해제 공식 발표',fx:{'엔터':.2,'게임':.12,'유통':.06,'항공':.05,'화장품':.15},next:[]},
   {t:'K팝 거품 논란, 음반 판매 급감',fx:{'엔터':-.13},next:[]}]},
  {name:'中 경기부양',icon:'🇨🇳',stages:[
-  {t:'中, 사상 최대 경기부양책 발표',fx:{ALL:.02,'화학':.08,'조선':.05,'자동차':.03},next:[[.5,1],[.5,2]]},
+  {t:'中, 사상 최대 경기부양책 발표',fx:{ALL:.02,'화학':.08,'조선':.05,'자동차':.03,'철강':.09,'화장품':.05},next:[[.5,1],[.5,2]]},
   {t:'中 경제 반등 확인, 원자재 랠리',fx:{'화학':.08,'원유':.08,'조선':.06,ALL:.015},next:[]},
   {t:'부양책 효과 미미… 中 부동산 위기 재점화',fx:{ALL:-.025,'화학':-.08,'건설':-.04},next:[]}]},
  {name:'전기차 대전환',icon:'⚡',stages:[
   {t:'유럽, 내연기관차 판매 금지 앞당겨',fx:{'2차전지':.1,'자동차':.03},next:[[.5,1],[.5,2]]},
   {t:'전고체 배터리 상용화 성공!',fx:{'2차전지':.21,'자동차':.05},next:[]},
   {t:'전기차 화재 잇따라… 안전성 논란',fx:{'2차전지':-.18,'자동차':-.05},next:[]}]},
+ {name:'원전 르네상스',icon:'⚛️',stages:[
+  {t:'정부, 신규 원전 건설 계획 발표',fx:{'원전':.12,'건설':.03},next:[[.6,1],[.4,2]]},
+  {t:'체코·폴란드 원전 수출 잇따라 수주',fx:{'원전':.2,'건설':.04,'철강':.03},next:[]},
+  {t:'원전 안전성 논란, 건설 계획 재검토',fx:{'원전':-.16},next:[]}]},
+ {name:'홍해 물류대란',icon:'🚢',stages:[
+  {t:'홍해 해상로 봉쇄… 운임 폭등',fx:{'해운':.15,'유통':-.03,ALL:-.01},next:[[.5,1],[.5,2]]},
+  {t:'물류대란 장기화, 컨테이너 운임 사상 최고',fx:{'해운':.18,'자동차':-.03,'화학':-.03},next:[]},
+  {t:'해상로 재개통, 운임 급락',fx:{'해운':-.16},next:[]}]},
  {name:'부동산 정책',icon:'🏠',stages:[
   {t:'정부, 부동산 규제 전면 완화',fx:{'건설':.12,'금융':.03},next:[[.5,1],[.5,2]]},
   {t:'집값 폭등… 정부 초강력 규제 예고',fx:{'건설':-.15,'금융':-.03},next:[]},
@@ -644,6 +698,10 @@ const SEC_NEWS={
  '유통':[['소비 심리 회복, 유통업계 반색',1],['K-푸드 수출 사상 최대',1],['곡물가 급등, 식품업계 원가 부담',-1]],
  '항공':[['해외여행 수요 폭발, 항공권 매진',1],['유가 급등에 항공업계 비상',-1]],
  '통신':[['통신 3사, 배당 확대 발표',1],['정부 통신비 인하 압박',-1]],
+ '철강':[['中 철강 감산, 국내 철강값 상승',1],['건설 경기 침체로 철강 수요 급감',-1]],
+ '화장품':[['K-뷰티 美·中 수출 사상 최대',1],['中 화장품 수입 규제 강화',-1]],
+ '원전':[['정부, 원전 생태계 복원 대책 발표',1],['원전 부품 결함 논란',-1]],
+ '해운':[['컨테이너 운임지수 급등',1],['해운 운임 급락, 공급 과잉 우려',-1]],
  '원유':[['OPEC+ 감산 연장 합의, 유가 급등',1],['OPEC+ 증산 결정, 유가 급락',-1]],
  '금':[['각국 중앙은행 금 매입 러시',1],['달러 강세에 금값 하락',-1]],
 };
@@ -821,6 +879,8 @@ function stepMinute(){
     if(s.kind==='idx') r=kR+gauss()*s.v/sq;
     else if(s.kind==='lev') r=2*kR+gauss()*s.v/sq;
     else if(s.kind==='inv') r=-kR+gauss()*s.v/sq;
+    else if(s.kind==='inv2') r=-2*kR+gauss()*s.v/sq;
+    else if(s.kind==='qidx') r=qR+gauss()*s.v/sq;
     else if(s.kind.startsWith('sec:')){const k=s.kind.slice(4); r=secR[k]/secN[k]+gauss()*s.v/sq;}
     else if(s.kind==='gold') r=-.25*mz+eff('sec:금')+gauss()*s.v/sq;
     else r=.15*mz+eff('sec:원유')+gauss()*s.v/sq;
@@ -1129,6 +1189,7 @@ function showNewsToast(n,total){
 
 // ===================== 렌더링 =====================
 const LTABS=[['all','전체'],['hold','보유'],['fav','관심'],['up','급상승'],['down','급하락'],['val','거래대금'],['etf','ETF']];
+let visRows=new Set(), rowIO=null;
 function buildList(){
   $('ltabs').innerHTML=LTABS.map(([k,n])=>`<button data-k="${k}" class="${k===listTab?'on':''}">${n}</button>`).join('');
   $('ltabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{listTab=b.dataset.k; buildList(); renderList(true);});
@@ -1137,6 +1198,9 @@ function buildList(){
     <div class="nm"><b>${s.n}</b><small>${s.kind?'<span class="badge etf">ETF</span>':s.s}<span class="own"></span></small></div>
     <div class="sk"></div><div class="pr"><b></b><small></small></div></div>`).join('');
   $('list').querySelectorAll('.row').forEach(r=>r.onclick=()=>{sel=+r.dataset.i; onSelect(); if(isMobile()) setTab('chart');});
+  if(rowIO) rowIO.disconnect(); visRows=new Set();
+  if('IntersectionObserver' in window){ rowIO=new IntersectionObserver(es=>es.forEach(e=>{ const i=+e.target.dataset.i; if(e.isIntersecting){ visRows.add(i); e.target.querySelector('.sk').innerHTML=spark(S.stocks[i]); } else visRows.delete(i); }),{root:document.querySelector('.col.left'),rootMargin:'200px'});
+    $('list').querySelectorAll('.row').forEach(r=>rowIO.observe(r)); }
 }
 function spark(s){
   const d=s.mins; if(d.length<2) return '';
@@ -1165,12 +1229,11 @@ function renderList(force){
     const P=px(s), c=chg(s);
     r.querySelector('.rk').textContent=k+1;
     const b=r.querySelector('.pr b');
-    if(lastPx[s.i]!==undefined&&lastPx[s.i]!==P){ b.classList.remove('fu','fd'); void b.offsetWidth; b.classList.add(P>lastPx[s.i]?'fu':'fd'); }
-    b.textContent=fmt(P); b.className=b.className.replace(/\b(up|down|flat)\b/g,'')+' '+cls(c);
+    const txt=fmt(P), cl=cls(c); if(b.textContent!==txt) b.textContent=txt; if(b.className!==cl) b.className=cl;
     let extra=P>=limUp(s)?'<span class="badge lu">상</span>':P<=limDn(s)?'<span class="badge ld">하</span>':'';
     r.querySelector('.pr small').innerHTML=`<span class="${cls(c)}">${pct(c)}</span>${extra}`;
     const h=S.holds[s.code]; r.querySelector('.own').textContent=h?` · ${h.q.toLocaleString()}주 보유`:'';
-    r.querySelector('.sk').innerHTML=spark(s);
+    if(!rowIO||visRows.has(s.i)||force) r.querySelector('.sk').innerHTML=spark(s);
     r.classList.toggle('sel',s.i===sel);
     lastPx[s.i]=P; });
   if(!arr.length){ if(!$('lempty')){const e=document.createElement('div');e.id='lempty';e.className='empty';box.appendChild(e);} $('lempty').style.display=''; $('lempty').textContent=listTab==='hold'?'보유한 종목이 없어요':listTab==='fav'?'★를 눌러 관심종목을 추가해보세요':'검색 결과가 없어요'; }
